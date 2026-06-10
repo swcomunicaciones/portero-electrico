@@ -6,183 +6,103 @@
   <title>Portero Eléctrico</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #22263a;
-      --accent: #4f8ef7;
-      --accent2: #38d9a9;
-      --danger: #ff6b6b;
-      --text: #e8eaf0;
-      --text-muted: #7a7f9a;
-      --border: #2e3250;
-      --radius: 14px;
+      --bg: #0f1117; --surface: #1a1d27; --accent: #4f8ef7;
+      --accent2: #38d9a9; --danger: #ff6b6b; --text: #e8eaf0;
+      --text-muted: #7a7f9a; --border: #2e3250; --radius: 14px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ─── LOADING ─── */
-    #loading-screen {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 16px; z-index: 999;
-    }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+    #loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 999; }
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-size: 0.82rem; color: var(--text-muted); }
 
-    /* ─── VISTA PÚBLICA ─── */
-    #view-public {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 0 0 40px;
-    }
-
-    .building-header {
-      width: 100%;
-      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 28px 24px 22px;
-      text-align: center;
-    }
-
+    #view-public { display: none; flex-direction: column; align-items: center; min-height: 100vh; padding: 0 0 40px; }
+    .building-header { width: 100%; background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 28px 24px 22px; text-align: center; }
     .building-icon { font-size: 2.4rem; margin-bottom: 8px; display: block; filter: drop-shadow(0 0 12px rgba(79,142,247,0.5)); }
-    .building-name { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text); text-transform: uppercase; }
-    .building-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.04em; }
-
-    .intercom-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3);
-      color: var(--accent); font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.08em; padding: 4px 12px; border-radius: 20px;
-      margin-top: 10px; text-transform: uppercase;
-    }
-    .intercom-badge::before {
-      content: ''; width: 7px; height: 7px;
-      background: var(--accent2); border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
+    .building-name { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .building-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+    .intercom-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); font-size: 0.7rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-top: 10px; text-transform: uppercase; }
+    .intercom-badge::before { content: ''; width: 7px; height: 7px; background: var(--accent2); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
-
     .instructions { font-size: 0.82rem; color: var(--text-muted); text-align: center; padding: 18px 24px 6px; max-width: 400px; }
-
-    .dept-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; padding: 16px 20px;
-      width: 100%; max-width: 480px;
-    }
-
-    .dept-btn {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 18px 12px;
-      cursor: pointer; transition: all 0.18s ease;
-      text-decoration: none; display: flex;
-      flex-direction: column; align-items: center; gap: 8px;
-      position: relative; overflow: hidden;
-    }
-    .dept-btn::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(79,142,247,0.08), transparent);
-      opacity: 0; transition: opacity 0.18s;
-    }
+    .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 20px; width: 100%; max-width: 480px; }
+    .dept-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 12px; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; overflow: hidden; }
+    .dept-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(79,142,247,0.08), transparent); opacity: 0; transition: opacity 0.18s; }
     .dept-btn:hover::before, .dept-btn:active::before { opacity: 1; }
     .dept-btn:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,142,247,0.15); }
-    .dept-btn:active { transform: translateY(0); }
-
-    .dept-number { font-size: 1.6rem; font-weight: 700; color: var(--text); letter-spacing: 0.04em; }
-    .dept-owner { font-size: 0.72rem; color: var(--text-muted); text-align: center; line-height: 1.3; }
-    .call-icon { font-size: 1.3rem; margin-top: 2px; }
-    .call-label { font-size: 0.65rem; color: var(--accent2); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-
+    .dept-number { font-size: 1.6rem; font-weight: 700; }
+    .dept-owner { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
+    .call-icon { font-size: 1.3rem; }
+    .call-label { font-size: 0.65rem; color: var(--accent2); font-weight: 600; text-transform: uppercase; }
     .admin-link { margin-top: 30px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; opacity: 0.5; transition: opacity 0.2s; }
     .admin-link:hover { opacity: 1; }
 
-    /* ─── MODAL PIN ─── */
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; }
+    /* Modal llamada */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; flex-direction: column; }
     .overlay.active { display: flex; }
+    .call-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; width: 92%; max-width: 420px; text-align: center; }
+    .call-modal h2 { font-size: 1.1rem; margin-bottom: 6px; }
+    .call-modal p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
+    .calling-animation { font-size: 3rem; margin: 12px 0; animation: ring 1s infinite; }
+    @keyframes ring { 0%,100%{transform:rotate(-15deg)} 50%{transform:rotate(15deg)} }
+    .jitsi-container { width: 100%; height: 420px; border-radius: 12px; overflow: hidden; margin: 16px 0; display: none; border: 1px solid var(--border); }
+    .btn-danger { background: var(--danger); color: white; border: none; border-radius: 10px; padding: 12px 28px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .btn-danger:hover { opacity: 0.85; }
+    .waiting-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 
+    /* Modal PIN */
     .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 28px; width: 90%; max-width: 340px; text-align: center; }
     .modal h2 { font-size: 1.1rem; margin-bottom: 6px; }
     .modal p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
-
     .pin-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-size: 1.2rem; letter-spacing: 0.3em; text-align: center; outline: none; margin-bottom: 14px; }
     .pin-input:focus { border-color: var(--accent); }
-
-    .btn-primary { width: 100%; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.18s; }
+    .btn-primary { width: 100%; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
     .btn-primary:hover { background: #3a7ae0; }
-    .btn-ghost { width: 100%; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 0.85rem; cursor: pointer; margin-top: 8px; transition: border-color 0.18s; }
-    .btn-ghost:hover { border-color: var(--text-muted); }
+    .btn-ghost { width: 100%; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 0.85rem; cursor: pointer; margin-top: 8px; }
     .pin-error { color: var(--danger); font-size: 0.78rem; margin-bottom: 10px; display: none; }
 
-    /* ─── PANEL ADMIN ─── */
+    /* Panel Admin */
     #view-admin { display: none; padding: 24px 20px 60px; max-width: 600px; margin: 0 auto; }
-
     .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
     .admin-header h1 { font-size: 1.1rem; font-weight: 700; }
-
-    .back-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 7px 14px; font-size: 0.78rem; cursor: pointer; transition: border-color 0.18s; }
-    .back-btn:hover { border-color: var(--text-muted); }
-
+    .back-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 7px 14px; font-size: 0.78rem; cursor: pointer; }
     .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
     .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-
     .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
     .field-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
     .field-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.88rem; outline: none; width: 100%; transition: border-color 0.18s; }
     .field-input:focus { border-color: var(--accent); }
-
-    .save-btn { background: var(--accent2); color: #0f1117; border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity 0.18s; }
-    .save-btn:hover { opacity: 0.85; }
+    .save-btn { background: var(--accent2); color: #0f1117; border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
     .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .dept-row { display: grid; grid-template-columns: 80px 1fr 140px 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .dept-row { display: grid; grid-template-columns: 70px 1fr 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
     .dept-row .field-input { margin: 0; }
-
-    .del-btn { background: transparent; border: 1px solid var(--border); color: var(--danger); border-radius: 8px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.18s; flex-shrink: 0; }
-    .del-btn:hover { background: rgba(255,107,107,0.1); }
-
-    .add-btn { background: transparent; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 8px; padding: 10px; font-size: 0.8rem; cursor: pointer; width: 100%; margin-top: 4px; transition: border-color 0.18s, color 0.18s; }
+    .del-btn { background: transparent; border: 1px solid var(--border); color: var(--danger); border-radius: 8px; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .add-btn { background: transparent; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 8px; padding: 10px; font-size: 0.8rem; cursor: pointer; width: 100%; margin-top: 4px; }
     .add-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    .col-headers { display: grid; grid-template-columns: 80px 1fr 140px 36px; gap: 8px; margin-bottom: 6px; }
+    .col-headers { display: grid; grid-template-columns: 70px 1fr 36px; gap: 8px; margin-bottom: 6px; }
     .col-header { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
-
     .change-pin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
     .firebase-badge { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 16px; }
     .firebase-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; }
+    .resident-link { font-size: 0.72rem; color: var(--accent); word-break: break-all; background: var(--bg); padding: 8px 10px; border-radius: 6px; margin-top: 6px; display: block; }
+    .notify-status { font-size: 0.72rem; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
+    .notify-active { background: rgba(56,217,169,0.15); color: var(--accent2); }
+    .notify-inactive { background: rgba(122,127,154,0.15); color: var(--text-muted); }
 
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent2); color: #0f1117; padding: 12px 24px; border-radius: 30px; font-size: 0.82rem; font-weight: 700; transition: transform 0.3s ease; z-index: 200; white-space: nowrap; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent2); color: #0f1117; padding: 12px 24px; border-radius: 30px; font-size: 0.82rem; font-weight: 700; transition: transform 0.3s; z-index: 200; white-space: nowrap; }
     .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loading-screen">
   <div class="spinner"></div>
   <div class="loading-text">Conectando...</div>
 </div>
 
-<!-- VISTA PÚBLICA -->
 <div id="view-public">
   <div class="building-header">
     <span class="building-icon">🏢</span>
@@ -190,12 +110,24 @@
     <div class="building-sub">Sistema de intercomunicación</div>
     <div class="intercom-badge">En línea</div>
   </div>
-  <p class="instructions">Seleccioná el departamento al que querés llamar. Se abrirá una videollamada de WhatsApp.</p>
+  <p class="instructions">Seleccioná el departamento al que querés llamar.</p>
   <div class="dept-grid" id="dept-grid"></div>
   <span class="admin-link" onclick="openPinModal()">⚙ Panel de administración</span>
 </div>
 
-<!-- MODAL PIN -->
+<!-- Modal videollamada -->
+<div class="overlay" id="call-overlay">
+  <div class="call-modal">
+    <div class="calling-animation" id="call-animation">🔔</div>
+    <h2 id="call-title">Llamando...</h2>
+    <p id="call-subtitle">Avisando al propietario, esperá un momento</p>
+    <div class="jitsi-container" id="jitsi-container"></div>
+    <p class="waiting-text" id="waiting-text">El propietario recibirá una notificación en su celular</p>
+    <button class="btn-danger" onclick="endCall()">✕ Cancelar llamada</button>
+  </div>
+</div>
+
+<!-- Modal PIN -->
 <div class="overlay" id="pin-overlay">
   <div class="modal">
     <h2>🔒 Acceso al Panel</h2>
@@ -207,22 +139,18 @@
   </div>
 </div>
 
-<!-- PANEL ADMIN -->
+<!-- Panel Admin -->
 <div id="view-admin">
   <div class="admin-header">
     <h1>⚙ Panel de Administración</h1>
     <button class="back-btn" onclick="showPublic()">← Volver</button>
   </div>
-
-  <div class="firebase-badge">
-    <div class="firebase-dot"></div>
-    Conectado a Firebase — los cambios se guardan en la nube
-  </div>
+  <div class="firebase-badge"><div class="firebase-dot"></div>Conectado a Firebase — cambios guardados en la nube</div>
 
   <div class="section-card">
     <div class="section-title">Nombre del Edificio</div>
     <div class="field-group">
-      <label class="field-label">Nombre visible en la pantalla</label>
+      <label class="field-label">Nombre visible</label>
       <input type="text" class="field-input" id="admin-building-name" />
     </div>
     <button class="save-btn" id="btn-save-building" onclick="saveBuildingName()">Guardar nombre</button>
@@ -232,8 +160,7 @@
     <div class="section-title">Departamentos</div>
     <div class="col-headers">
       <span class="col-header">Depto</span>
-      <span class="col-header">Propietario</span>
-      <span class="col-header">WhatsApp</span>
+      <span class="col-header">Propietario · Link de activación · Estado</span>
       <span class="col-header"></span>
     </div>
     <div id="dept-list"></div>
@@ -243,7 +170,7 @@
   </div>
 
   <div class="section-card">
-    <div class="section-title">Cambiar PIN de Administrador</div>
+    <div class="section-title">Cambiar PIN</div>
     <div class="change-pin-row">
       <div class="field-group">
         <label class="field-label">PIN actual</label>
@@ -260,10 +187,11 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
+<script src="https://meet.jit.si/external_api.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, get, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDXJRaFIR8K7XvYuwqg-_t-PqF__vxw1Z0",
@@ -278,53 +206,50 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
+  const VAPID_KEY = "BEaTikxhorwYjfX-JoMOu2gsIiVJOErGDBAJ4NOdmYNkAU7vUVFh5U4QCrIrNmFJjdnm3NI1OtQD5OJ_4FiX230";
+  const BASE_URL = window.location.origin + window.location.pathname.replace('index.html','');
+
+  let appData = null;
+  let jitsiApi = null;
+  let currentRoom = null;
+
   const DEFAULT_DATA = {
     buildingName: "EDIFICIO EL ACUERDO",
     pin: "1234",
     departments: [
-      { number: "1A", owner: "Propietario 1A", phone: "5491100000001" },
-      { number: "1B", owner: "Propietario 1B", phone: "5491100000002" },
-      { number: "2A", owner: "Propietario 2A", phone: "5491100000003" },
-      { number: "2B", owner: "Propietario 2B", phone: "5491100000004" },
-      { number: "3A", owner: "Propietario 3A", phone: "5491100000005" },
-      { number: "3B", owner: "Propietario 3B", phone: "5491100000006" },
-      { number: "4A", owner: "Propietario 4A", phone: "5491100000007" },
-      { number: "4B", owner: "Propietario 4B", phone: "5491100000008" },
-      { number: "5A", owner: "Propietario 5A", phone: "5491100000009" },
-      { number: "5B", owner: "Propietario 5B", phone: "5491100000010" },
+      { number: "1A", owner: "Propietario 1A" },
+      { number: "1B", owner: "Propietario 1B" },
+      { number: "2A", owner: "Propietario 2A" },
+      { number: "2B", owner: "Propietario 2B" },
+      { number: "3A", owner: "Propietario 3A" },
+      { number: "3B", owner: "Propietario 3B" },
+      { number: "4A", owner: "Propietario 4A" },
+      { number: "4B", owner: "Propietario 4B" },
+      { number: "5A", owner: "Propietario 5A" },
+      { number: "5B", owner: "Propietario 5B" },
     ]
   };
 
-  let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-
-  // ── Cargar datos desde Firebase ──
   async function loadFromFirebase() {
     try {
       const snapshot = await get(ref(db, 'portero'));
       if (snapshot.exists()) {
         appData = snapshot.val();
-        // Convertir departments de objeto a array si es necesario
         if (appData.departments && !Array.isArray(appData.departments)) {
           appData.departments = Object.values(appData.departments);
         }
       } else {
-        // Primera vez: guardar datos por defecto
         await set(ref(db, 'portero'), DEFAULT_DATA);
+        appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
       }
     } catch(e) {
-      console.error('Error cargando Firebase:', e);
+      appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
     renderPublic();
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('view-public').style.display = 'flex';
   }
 
-  // ── Guardar en Firebase ──
-  async function saveToFirebase(data) {
-    await set(ref(db, 'portero'), data);
-  }
-
-  // ── Escuchar cambios en tiempo real ──
   onValue(ref(db, 'portero'), (snapshot) => {
     if (snapshot.exists()) {
       const data = snapshot.val();
@@ -336,71 +261,138 @@
     }
   });
 
-  // ── Render vista pública ──
+  async function saveToFirebase(data) {
+    await set(ref(db, 'portero'), data);
+  }
+
+  // ── Videollamada ──
+  window.startCall = async function(deptNumber, deptOwner) {
+    const roomName = `ElAcuerdo-${deptNumber}-${Date.now()}`;
+    currentRoom = roomName;
+
+    document.getElementById('call-title').textContent = `Llamando a Depto ${deptNumber}`;
+    document.getElementById('call-subtitle').textContent = `Avisando a ${deptOwner}...`;
+    document.getElementById('call-animation').style.display = 'block';
+    document.getElementById('jitsi-container').style.display = 'none';
+    document.getElementById('waiting-text').textContent = 'El propietario recibirá una notificación en su celular';
+    document.getElementById('call-overlay').classList.add('active');
+
+    // Guardar llamada en Firebase para notificar al residente
+    try {
+      await push(ref(db, `llamadas/${deptNumber}`), {
+        room: roomName,
+        timestamp: Date.now(),
+        status: 'calling'
+      });
+    } catch(e) {}
+
+    // Iniciar Jitsi
+    setTimeout(() => {
+      document.getElementById('call-animation').style.display = 'none';
+      document.getElementById('jitsi-container').style.display = 'block';
+      document.getElementById('waiting-text').textContent = `Sala abierta — esperando que ${deptOwner} se una`;
+
+      const container = document.getElementById('jitsi-container');
+      container.innerHTML = '';
+
+      jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
+        roomName: roomName,
+        width: "100%",
+        height: 420,
+        parentNode: container,
+        configOverwrite: {
+          startWithVideoMuted: false,
+          startWithAudioMuted: false,
+          prejoinPageEnabled: false,
+        },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_BRAND_WATERMARK: false,
+          TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'],
+        },
+        userInfo: { displayName: 'Visitante' }
+      });
+    }, 1500);
+  }
+
+  window.endCall = function() {
+    if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
+    document.getElementById('call-overlay').classList.remove('active');
+    document.getElementById('jitsi-container').innerHTML = '';
+    currentRoom = null;
+  }
+
+  // ── Render público ──
   window.renderPublic = function() {
+    if (!appData) return;
     document.getElementById('pub-building-name').textContent = appData.buildingName;
     document.title = appData.buildingName;
     const grid = document.getElementById('dept-grid');
     grid.innerHTML = '';
     (appData.departments || []).forEach(dept => {
-      const a = document.createElement('a');
-      a.className = 'dept-btn';
-      a.href = `https://wa.me/${dept.phone}?video=1`;
-      a.setAttribute('target', '_blank');
-      a.innerHTML = `
+      const btn = document.createElement('div');
+      btn.className = 'dept-btn';
+      btn.onclick = () => window.startCall(dept.number, dept.owner);
+      btn.innerHTML = `
         <span class="dept-number">${dept.number}</span>
         <span class="dept-owner">${dept.owner || 'Sin nombre'}</span>
         <span class="call-icon">📹</span>
         <span class="call-label">Videollamar</span>
       `;
-      grid.appendChild(a);
+      grid.appendChild(btn);
     });
   }
 
-  // ── Render panel admin ──
+  // ── Render admin ──
   window.renderAdmin = function() {
     document.getElementById('admin-building-name').value = appData.buildingName;
     const list = document.getElementById('dept-list');
     list.innerHTML = '';
     (appData.departments || []).forEach((dept, i) => {
+      const residentUrl = `${BASE_URL}residente.html?depto=${encodeURIComponent(dept.number)}`;
+      const hasToken = appData.tokens && appData.tokens[dept.number];
+      const statusHtml = hasToken
+        ? `<span class="notify-status notify-active">✓ Notificaciones activas</span>`
+        : `<span class="notify-status notify-inactive">Sin activar</span>`;
       const row = document.createElement('div');
       row.className = 'dept-row';
       row.innerHTML = `
         <input class="field-input" type="text" value="${dept.number}" placeholder="1A" data-field="number" data-idx="${i}" />
-        <input class="field-input" type="text" value="${dept.owner}" placeholder="Propietario" data-field="owner" data-idx="${i}" />
-        <input class="field-input" type="tel" value="${dept.phone}" placeholder="5491100000000" data-field="phone" data-idx="${i}" />
+        <div>
+          <input class="field-input" type="text" value="${dept.owner}" placeholder="Propietario" data-field="owner" data-idx="${i}" style="margin-bottom:6px" />
+          <a class="resident-link" href="${residentUrl}" target="_blank">🔗 Link del residente</a>
+          <div style="margin-top:4px">${statusHtml}</div>
+        </div>
         <button class="del-btn" onclick="deleteDept(${i})">✕</button>
       `;
       list.appendChild(row);
     });
   }
 
-  // ── Acciones admin ──
   window.saveBuildingName = async function() {
     const btn = document.getElementById('btn-save-building');
     btn.disabled = true; btn.textContent = 'Guardando...';
     appData.buildingName = document.getElementById('admin-building-name').value.trim() || appData.buildingName;
     await saveToFirebase(appData);
     btn.disabled = false; btn.textContent = 'Guardar nombre';
-    showToast('✓ Nombre guardado en la nube');
+    showToast('✓ Nombre guardado');
   }
 
   window.saveDepts = async function() {
     const btn = document.getElementById('btn-save-depts');
     btn.disabled = true; btn.textContent = 'Guardando...';
     const rows = document.querySelectorAll('#dept-list .dept-row');
-    appData.departments = Array.from(rows).map((row, i) => ({
+    appData.departments = Array.from(rows).map(row => ({
       number: row.querySelector('[data-field="number"]').value.trim(),
-      owner:  row.querySelector('[data-field="owner"]').value.trim(),
-      phone:  row.querySelector('[data-field="phone"]').value.trim(),
+      owner: row.querySelector('[data-field="owner"]').value.trim(),
     }));
     await saveToFirebase(appData);
     btn.disabled = false; btn.textContent = 'Guardar departamentos';
-    showToast('✓ Departamentos guardados en la nube');
+    showToast('✓ Departamentos guardados');
   }
 
   window.addDept = function() {
-    appData.departments.push({ number: '', owner: '', phone: '' });
+    appData.departments.push({ number: '', owner: '' });
     renderAdmin();
   }
 
@@ -412,16 +404,15 @@
   window.changePin = async function() {
     const oldPin = document.getElementById('old-pin').value;
     const newPin = document.getElementById('new-pin').value;
-    if (oldPin !== appData.pin) { showToast('✕ PIN actual incorrecto', true); return; }
-    if (newPin.length < 4) { showToast('✕ El PIN nuevo debe tener al menos 4 dígitos', true); return; }
+    if (oldPin !== appData.pin) { showToast('✕ PIN incorrecto', true); return; }
+    if (newPin.length < 4) { showToast('✕ PIN nuevo muy corto', true); return; }
     appData.pin = newPin;
     await saveToFirebase(appData);
     document.getElementById('old-pin').value = '';
     document.getElementById('new-pin').value = '';
-    showToast('✓ PIN cambiado y guardado en la nube');
+    showToast('✓ PIN cambiado');
   }
 
-  // ── Navegación ──
   window.showPublic = function() {
     document.getElementById('view-public').style.display = 'flex';
     document.getElementById('view-admin').style.display = 'none';
@@ -433,7 +424,6 @@
     document.getElementById('view-admin').style.display = 'block';
   }
 
-  // ── Modal PIN ──
   window.openPinModal = function() {
     document.getElementById('pin-input').value = '';
     document.getElementById('pin-error').style.display = 'none';
@@ -447,25 +437,17 @@
 
   window.checkPin = function() {
     const val = document.getElementById('pin-input').value;
-    if (val === appData.pin) {
-      closePinModal();
-      showAdmin();
-    } else {
+    if (val === appData.pin) { closePinModal(); showAdmin(); }
+    else {
       document.getElementById('pin-error').style.display = 'block';
       document.getElementById('pin-input').value = '';
       document.getElementById('pin-input').focus();
     }
   }
 
-  document.getElementById('pin-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') window.checkPin();
-  });
+  document.getElementById('pin-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkPin(); });
+  document.getElementById('pin-overlay').addEventListener('click', e => { if (e.target === document.getElementById('pin-overlay')) window.closePinModal(); });
 
-  document.getElementById('pin-overlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('pin-overlay')) window.closePinModal();
-  });
-
-  // ── Toast ──
   window.showToast = function(msg, isError = false) {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -475,7 +457,6 @@
     setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  // ── Init ──
   loadFromFirebase();
 </script>
 </body>
