@@ -27,6 +27,7 @@
     .intercom-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); font-size: 0.7rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-top: 10px; text-transform: uppercase; }
     .intercom-badge::before { content: ''; width: 7px; height: 7px; background: var(--accent2); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
     .instructions { font-size: 0.82rem; color: var(--text-muted); text-align: center; padding: 18px 24px 6px; max-width: 400px; }
     .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 20px; width: 100%; max-width: 480px; }
     .dept-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 12px; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; overflow: hidden; }
@@ -41,17 +42,31 @@
     .admin-link:hover { opacity: 1; }
 
     /* Modal llamada */
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; flex-direction: column; }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 100; align-items: center; justify-content: center; }
     .overlay.active { display: flex; }
+
     .call-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; width: 92%; max-width: 420px; text-align: center; }
-    .call-modal h2 { font-size: 1.1rem; margin-bottom: 6px; }
-    .call-modal p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
-    .calling-animation { font-size: 3rem; margin: 12px 0; animation: ring 1s infinite; }
-    @keyframes ring { 0%,100%{transform:rotate(-15deg)} 50%{transform:rotate(15deg)} }
-    .jitsi-container { width: 100%; height: 420px; border-radius: 12px; overflow: hidden; margin: 16px 0; display: none; border: 1px solid var(--border); }
-    .btn-danger { background: var(--danger); color: white; border: none; border-radius: 10px; padding: 12px 28px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
-    .btn-danger:hover { opacity: 0.85; }
-    .waiting-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
+    .call-step { display: none; }
+    .call-step.active { display: block; }
+
+    /* Paso 1: aviso WhatsApp */
+    .ringing-icon { font-size: 3.5rem; margin: 8px 0 16px; animation: ring 0.7s infinite alternate; display: block; }
+    @keyframes ring { from{transform:rotate(-14deg)} to{transform:rotate(14deg)} }
+    .call-modal h2 { font-size: 1.1rem; margin-bottom: 8px; }
+    .call-modal p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+    .step-label { display: inline-flex; align-items: center; gap: 6px; background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.25); color: var(--accent); font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .btn-whatsapp { width: 100%; background: #25D366; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-whatsapp:hover { background: #1ebe5d; }
+    .btn-join { width: 100%; background: var(--accent); color: white; border: none; border-radius: 12px; padding: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-join:hover { background: #3a7ae0; }
+    .btn-cancel { width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 12px; padding: 11px; font-size: 0.85rem; cursor: pointer; }
+    .btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* Paso 2: Jitsi */
+    .jitsi-wrap { width: 100%; height: 400px; border-radius: 12px; overflow: hidden; margin: 12px 0; border: 1px solid var(--border); }
+    .waiting-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 14px; }
+    .waiting-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; animation: pulse 1.5s infinite; }
 
     /* Modal PIN */
     .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 28px; width: 90%; max-width: 340px; text-align: center; }
@@ -60,7 +75,6 @@
     .pin-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-size: 1.2rem; letter-spacing: 0.3em; text-align: center; outline: none; margin-bottom: 14px; }
     .pin-input:focus { border-color: var(--accent); }
     .btn-primary { width: 100%; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
-    .btn-primary:hover { background: #3a7ae0; }
     .btn-ghost { width: 100%; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 0.85rem; cursor: pointer; margin-top: 8px; }
     .pin-error { color: var(--danger); font-size: 0.78rem; margin-bottom: 10px; display: none; }
 
@@ -77,21 +91,16 @@
     .field-input:focus { border-color: var(--accent); }
     .save-btn { background: var(--accent2); color: #0f1117; border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
     .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .dept-row { display: grid; grid-template-columns: 70px 1fr 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .dept-row { display: grid; grid-template-columns: 70px 1fr 145px 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
     .dept-row .field-input { margin: 0; }
     .del-btn { background: transparent; border: 1px solid var(--border); color: var(--danger); border-radius: 8px; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .add-btn { background: transparent; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 8px; padding: 10px; font-size: 0.8rem; cursor: pointer; width: 100%; margin-top: 4px; }
     .add-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .col-headers { display: grid; grid-template-columns: 70px 1fr 36px; gap: 8px; margin-bottom: 6px; }
+    .col-headers { display: grid; grid-template-columns: 70px 1fr 145px 36px; gap: 8px; margin-bottom: 6px; }
     .col-header { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
     .change-pin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .firebase-badge { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 16px; }
     .firebase-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; }
-    .resident-link { font-size: 0.72rem; color: var(--accent); word-break: break-all; background: var(--bg); padding: 8px 10px; border-radius: 6px; margin-top: 6px; display: block; }
-    .notify-status { font-size: 0.72rem; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
-    .notify-active { background: rgba(56,217,169,0.15); color: var(--accent2); }
-    .notify-inactive { background: rgba(122,127,154,0.15); color: var(--text-muted); }
-
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent2); color: #0f1117; padding: 12px 24px; border-radius: 30px; font-size: 0.82rem; font-weight: 700; transition: transform 0.3s; z-index: 200; white-space: nowrap; }
     .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
@@ -115,15 +124,31 @@
   <span class="admin-link" onclick="openPinModal()">⚙ Panel de administración</span>
 </div>
 
-<!-- Modal videollamada -->
+<!-- Modal videollamada — 2 pasos -->
 <div class="overlay" id="call-overlay">
   <div class="call-modal">
-    <div class="calling-animation" id="call-animation">🔔</div>
-    <h2 id="call-title">Llamando...</h2>
-    <p id="call-subtitle">Avisando al propietario, esperá un momento</p>
-    <div class="jitsi-container" id="jitsi-container"></div>
-    <p class="waiting-text" id="waiting-text">El propietario recibirá una notificación en su celular</p>
-    <button class="btn-danger" onclick="endCall()">✕ Cancelar llamada</button>
+
+    <!-- Paso 1: Avisar por WhatsApp -->
+    <div class="call-step active" id="step1">
+      <span class="ringing-icon">🔔</span>
+      <div class="step-label">Paso 1 de 2</div>
+      <h2 id="step1-title">Llamando a Depto —</h2>
+      <p>Tocá el botón para avisar al propietario por WhatsApp. Después entrás a la videollamada.</p>
+      <button class="btn-whatsapp" id="btn-whatsapp" onclick="sendWhatsApp()">
+        <span>💬</span> Avisar por WhatsApp
+      </button>
+      <button class="btn-cancel" onclick="endCall()">Cancelar</button>
+    </div>
+
+    <!-- Paso 2: Videollamada Jitsi -->
+    <div class="call-step" id="step2">
+      <div class="step-label">Paso 2 de 2</div>
+      <h2 id="step2-title">Videollamada — Depto —</h2>
+      <div class="waiting-badge"><div class="waiting-dot"></div> Esperando que el propietario se una...</div>
+      <div class="jitsi-wrap" id="jitsi-container"></div>
+      <button class="btn-cancel" onclick="endCall()">✕ Colgar</button>
+    </div>
+
   </div>
 </div>
 
@@ -160,7 +185,8 @@
     <div class="section-title">Departamentos</div>
     <div class="col-headers">
       <span class="col-header">Depto</span>
-      <span class="col-header">Propietario · Link de activación · Estado</span>
+      <span class="col-header">Propietario</span>
+      <span class="col-header">WhatsApp</span>
       <span class="col-header"></span>
     </div>
     <div id="dept-list"></div>
@@ -190,8 +216,7 @@
 <script src="https://meet.jit.si/external_api.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDXJRaFIR8K7XvYuwqg-_t-PqF__vxw1Z0",
@@ -206,27 +231,24 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  const VAPID_KEY = "BEaTikxhorwYjfX-JoMOu2gsIiVJOErGDBAJ4NOdmYNkAU7vUVFh5U4QCrIrNmFJjdnm3NI1OtQD5OJ_4FiX230";
-  const BASE_URL = window.location.origin + window.location.pathname.replace('index.html','');
-
   let appData = null;
   let jitsiApi = null;
-  let currentRoom = null;
+  let currentDept = null;
 
   const DEFAULT_DATA = {
     buildingName: "EDIFICIO EL ACUERDO",
     pin: "1234",
     departments: [
-      { number: "1A", owner: "Propietario 1A" },
-      { number: "1B", owner: "Propietario 1B" },
-      { number: "2A", owner: "Propietario 2A" },
-      { number: "2B", owner: "Propietario 2B" },
-      { number: "3A", owner: "Propietario 3A" },
-      { number: "3B", owner: "Propietario 3B" },
-      { number: "4A", owner: "Propietario 4A" },
-      { number: "4B", owner: "Propietario 4B" },
-      { number: "5A", owner: "Propietario 5A" },
-      { number: "5B", owner: "Propietario 5B" },
+      { number: "1A", owner: "Propietario 1A", phone: "" },
+      { number: "1B", owner: "Propietario 1B", phone: "" },
+      { number: "2A", owner: "Propietario 2A", phone: "" },
+      { number: "2B", owner: "Propietario 2B", phone: "" },
+      { number: "3A", owner: "Propietario 3A", phone: "" },
+      { number: "3B", owner: "Propietario 3B", phone: "" },
+      { number: "4A", owner: "Propietario 4A", phone: "" },
+      { number: "4B", owner: "Propietario 4B", phone: "" },
+      { number: "5A", owner: "Propietario 5A", phone: "" },
+      { number: "5B", owner: "Propietario 5B", phone: "" },
     ]
   };
 
@@ -266,60 +288,64 @@
   }
 
   // ── Videollamada ──
-  window.startCall = async function(deptNumber, deptOwner) {
-    const roomName = `ElAcuerdo-${deptNumber}-${Date.now()}`;
-    currentRoom = roomName;
+  window.startCall = function(dept) {
+    currentDept = dept;
+    const roomName = `ElAcuerdo-${dept.number}-${Date.now()}`;
+    currentDept._room = roomName;
 
-    document.getElementById('call-title').textContent = `Llamando a Depto ${deptNumber}`;
-    document.getElementById('call-subtitle').textContent = `Avisando a ${deptOwner}...`;
-    document.getElementById('call-animation').style.display = 'block';
-    document.getElementById('jitsi-container').style.display = 'none';
-    document.getElementById('waiting-text').textContent = 'El propietario recibirá una notificación en su celular';
+    document.getElementById('step1-title').textContent = `Llamando a Depto ${dept.number}`;
+    document.getElementById('step2-title').textContent = `Videollamada — Depto ${dept.number}`;
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step2').classList.remove('active');
     document.getElementById('call-overlay').classList.add('active');
+  }
 
-    // Guardar llamada en Firebase para notificar al residente
-    try {
-      await push(ref(db, `llamadas/${deptNumber}`), {
-        room: roomName,
-        timestamp: Date.now(),
-        status: 'calling'
-      });
-    } catch(e) {}
+  window.sendWhatsApp = function() {
+    if (!currentDept) return;
+    const room = currentDept._room;
+    const joinUrl = `https://meet.jit.si/${room}`;
+    const building = appData.buildingName || 'El edificio';
+    const msg = `🔔 *${building}* — Hay una visita esperando en la puerta del Depto ${currentDept.number}.\n\nUní a la videollamada:\n${joinUrl}`;
+    const waUrl = `https://wa.me/${currentDept.phone}?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl, '_blank');
 
-    // Iniciar Jitsi
+    // Pasar al paso 2 — iniciar Jitsi
     setTimeout(() => {
-      document.getElementById('call-animation').style.display = 'none';
-      document.getElementById('jitsi-container').style.display = 'block';
-      document.getElementById('waiting-text').textContent = `Sala abierta — esperando que ${deptOwner} se una`;
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step2').classList.add('active');
+      launchJitsi(room, currentDept.number);
+    }, 800);
+  }
 
-      const container = document.getElementById('jitsi-container');
-      container.innerHTML = '';
-
-      jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
-        roomName: roomName,
-        width: "100%",
-        height: 420,
-        parentNode: container,
-        configOverwrite: {
-          startWithVideoMuted: false,
-          startWithAudioMuted: false,
-          prejoinPageEnabled: false,
-        },
-        interfaceConfigOverwrite: {
-          SHOW_JITSI_WATERMARK: false,
-          SHOW_BRAND_WATERMARK: false,
-          TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'],
-        },
-        userInfo: { displayName: 'Visitante' }
-      });
-    }, 1500);
+  function launchJitsi(roomName, deptNumber) {
+    const container = document.getElementById('jitsi-container');
+    container.innerHTML = '';
+    jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
+      roomName: roomName,
+      width: "100%",
+      height: 400,
+      parentNode: container,
+      configOverwrite: {
+        startWithVideoMuted: false,
+        startWithAudioMuted: false,
+        prejoinPageEnabled: false,
+      },
+      interfaceConfigOverwrite: {
+        SHOW_JITSI_WATERMARK: false,
+        TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'],
+      },
+      userInfo: { displayName: 'Visitante' }
+    });
+    jitsiApi.addEventListener('readyToClose', () => endCall());
   }
 
   window.endCall = function() {
     if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
     document.getElementById('call-overlay').classList.remove('active');
     document.getElementById('jitsi-container').innerHTML = '';
-    currentRoom = null;
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step2').classList.remove('active');
+    currentDept = null;
   }
 
   // ── Render público ──
@@ -332,7 +358,7 @@
     (appData.departments || []).forEach(dept => {
       const btn = document.createElement('div');
       btn.className = 'dept-btn';
-      btn.onclick = () => window.startCall(dept.number, dept.owner);
+      btn.onclick = () => window.startCall(dept);
       btn.innerHTML = `
         <span class="dept-number">${dept.number}</span>
         <span class="dept-owner">${dept.owner || 'Sin nombre'}</span>
@@ -349,20 +375,12 @@
     const list = document.getElementById('dept-list');
     list.innerHTML = '';
     (appData.departments || []).forEach((dept, i) => {
-      const residentUrl = `${BASE_URL}residente.html?depto=${encodeURIComponent(dept.number)}`;
-      const hasToken = appData.tokens && appData.tokens[dept.number];
-      const statusHtml = hasToken
-        ? `<span class="notify-status notify-active">✓ Notificaciones activas</span>`
-        : `<span class="notify-status notify-inactive">Sin activar</span>`;
       const row = document.createElement('div');
       row.className = 'dept-row';
       row.innerHTML = `
         <input class="field-input" type="text" value="${dept.number}" placeholder="1A" data-field="number" data-idx="${i}" />
-        <div>
-          <input class="field-input" type="text" value="${dept.owner}" placeholder="Propietario" data-field="owner" data-idx="${i}" style="margin-bottom:6px" />
-          <a class="resident-link" href="${residentUrl}" target="_blank">🔗 Link del residente</a>
-          <div style="margin-top:4px">${statusHtml}</div>
-        </div>
+        <input class="field-input" type="text" value="${dept.owner}" placeholder="Propietario" data-field="owner" data-idx="${i}" />
+        <input class="field-input" type="tel" value="${dept.phone || ''}" placeholder="5491155443322" data-field="phone" data-idx="${i}" />
         <button class="del-btn" onclick="deleteDept(${i})">✕</button>
       `;
       list.appendChild(row);
@@ -384,7 +402,8 @@
     const rows = document.querySelectorAll('#dept-list .dept-row');
     appData.departments = Array.from(rows).map(row => ({
       number: row.querySelector('[data-field="number"]').value.trim(),
-      owner: row.querySelector('[data-field="owner"]').value.trim(),
+      owner:  row.querySelector('[data-field="owner"]').value.trim(),
+      phone:  row.querySelector('[data-field="phone"]').value.trim(),
     }));
     await saveToFirebase(appData);
     btn.disabled = false; btn.textContent = 'Guardar departamentos';
@@ -392,7 +411,7 @@
   }
 
   window.addDept = function() {
-    appData.departments.push({ number: '', owner: '' });
+    appData.departments.push({ number: '', owner: '', phone: '' });
     renderAdmin();
   }
 
