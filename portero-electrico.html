@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portero Eléctrico</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --accent: #4f8ef7;
+      --accent2: #38d9a9;
+      --danger: #ff6b6b;
+      --text: #e8eaf0;
+      --text-muted: #7a7f9a;
+      --border: #2e3250;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── LOADING ─── */
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; z-index: 999;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 0.82rem; color: var(--text-muted); }
+
+    /* ─── VISTA PÚBLICA ─── */
+    #view-public {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 0 0 40px;
+    }
+
+    .building-header {
+      width: 100%;
+      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 24px 22px;
+      text-align: center;
+    }
+
+    .building-icon { font-size: 2.4rem; margin-bottom: 8px; display: block; filter: drop-shadow(0 0 12px rgba(79,142,247,0.5)); }
+    .building-name { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text); text-transform: uppercase; }
+    .building-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+    .intercom-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3);
+      color: var(--accent); font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.08em; padding: 4px 12px; border-radius: 20px;
+      margin-top: 10px; text-transform: uppercase;
+    }
+    .intercom-badge::before {
+      content: ''; width: 7px; height: 7px;
+      background: var(--accent2); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+    .instructions { font-size: 0.82rem; color: var(--text-muted); text-align: center; padding: 18px 24px 6px; max-width: 400px; }
+
+    .dept-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: 16px 20px;
+      width: 100%; max-width: 480px;
+    }
+
+    .dept-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 12px;
+      cursor: pointer; transition: all 0.18s ease;
+      text-decoration: none; display: flex;
+      flex-direction: column; align-items: center; gap: 8px;
+      position: relative; overflow: hidden;
+    }
+    .dept-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(79,142,247,0.08), transparent);
+      opacity: 0; transition: opacity 0.18s;
+    }
+    .dept-btn:hover::before, .dept-btn:active::before { opacity: 1; }
+    .dept-btn:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,142,247,0.15); }
+    .dept-btn:active { transform: translateY(0); }
+
+    .dept-number { font-size: 1.6rem; font-weight: 700; color: var(--text); letter-spacing: 0.04em; }
+    .dept-owner { font-size: 0.72rem; color: var(--text-muted); text-align: center; line-height: 1.3; }
+    .call-icon { font-size: 1.3rem; margin-top: 2px; }
+    .call-label { font-size: 0.65rem; color: var(--accent2); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .admin-link { margin-top: 30px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; opacity: 0.5; transition: opacity 0.2s; }
+    .admin-link:hover { opacity: 1; }
+
+    /* ─── MODAL PIN ─── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; }
+    .overlay.active { display: flex; }
+
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 28px; width: 90%; max-width: 340px; text-align: center; }
+    .modal h2 { font-size: 1.1rem; margin-bottom: 6px; }
+    .modal p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
+
+    .pin-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-size: 1.2rem; letter-spacing: 0.3em; text-align: center; outline: none; margin-bottom: 14px; }
+    .pin-input:focus { border-color: var(--accent); }
+
+    .btn-primary { width: 100%; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.18s; }
+    .btn-primary:hover { background: #3a7ae0; }
+    .btn-ghost { width: 100%; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 0.85rem; cursor: pointer; margin-top: 8px; transition: border-color 0.18s; }
+    .btn-ghost:hover { border-color: var(--text-muted); }
+    .pin-error { color: var(--danger); font-size: 0.78rem; margin-bottom: 10px; display: none; }
+
+    /* ─── PANEL ADMIN ─── */
+    #view-admin { display: none; padding: 24px 20px 60px; max-width: 600px; margin: 0 auto; }
+
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .admin-header h1 { font-size: 1.1rem; font-weight: 700; }
+
+    .back-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 7px 14px; font-size: 0.78rem; cursor: pointer; transition: border-color 0.18s; }
+    .back-btn:hover { border-color: var(--text-muted); }
+
+    .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+    .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .field-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+    .field-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.88rem; outline: none; width: 100%; transition: border-color 0.18s; }
+    .field-input:focus { border-color: var(--accent); }
+
+    .save-btn { background: var(--accent2); color: #0f1117; border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity 0.18s; }
+    .save-btn:hover { opacity: 0.85; }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .dept-row { display: grid; grid-template-columns: 80px 1fr 140px 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .dept-row .field-input { margin: 0; }
+
+    .del-btn { background: transparent; border: 1px solid var(--border); color: var(--danger); border-radius: 8px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.18s; flex-shrink: 0; }
+    .del-btn:hover { background: rgba(255,107,107,0.1); }
+
+    .add-btn { background: transparent; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 8px; padding: 10px; font-size: 0.8rem; cursor: pointer; width: 100%; margin-top: 4px; transition: border-color 0.18s, color 0.18s; }
+    .add-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .col-headers { display: grid; grid-template-columns: 80px 1fr 140px 36px; gap: 8px; margin-bottom: 6px; }
+    .col-header { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+
+    .change-pin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .firebase-badge { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 16px; }
+    .firebase-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent2); color: #0f1117; padding: 12px 24px; border-radius: 30px; font-size: 0.82rem; font-weight: 700; transition: transform 0.3s ease; z-index: 200; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <div class="loading-text">Conectando...</div>
+</div>
+
+<!-- VISTA PÚBLICA -->
+<div id="view-public">
+  <div class="building-header">
+    <span class="building-icon">🏢</span>
+    <div class="building-name" id="pub-building-name">EDIFICIO EL ACUERDO</div>
+    <div class="building-sub">Sistema de intercomunicación</div>
+    <div class="intercom-badge">En línea</div>
+  </div>
+  <p class="instructions">Seleccioná el departamento al que querés llamar. Se abrirá una videollamada de WhatsApp.</p>
+  <div class="dept-grid" id="dept-grid"></div>
+  <span class="admin-link" onclick="openPinModal()">⚙ Panel de administración</span>
+</div>
+
+<!-- MODAL PIN -->
+<div class="overlay" id="pin-overlay">
+  <div class="modal">
+    <h2>🔒 Acceso al Panel</h2>
+    <p>Ingresá el PIN de administrador</p>
+    <input type="password" class="pin-input" id="pin-input" maxlength="6" placeholder="••••" inputmode="numeric" />
+    <div class="pin-error" id="pin-error">PIN incorrecto. Intentá de nuevo.</div>
+    <button class="btn-primary" onclick="checkPin()">Ingresar</button>
+    <button class="btn-ghost" onclick="closePinModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- PANEL ADMIN -->
+<div id="view-admin">
+  <div class="admin-header">
+    <h1>⚙ Panel de Administración</h1>
+    <button class="back-btn" onclick="showPublic()">← Volver</button>
+  </div>
+
+  <div class="firebase-badge">
+    <div class="firebase-dot"></div>
+    Conectado a Firebase — los cambios se guardan en la nube
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">Nombre del Edificio</div>
+    <div class="field-group">
+      <label class="field-label">Nombre visible en la pantalla</label>
+      <input type="text" class="field-input" id="admin-building-name" />
+    </div>
+    <button class="save-btn" id="btn-save-building" onclick="saveBuildingName()">Guardar nombre</button>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">Departamentos</div>
+    <div class="col-headers">
+      <span class="col-header">Depto</span>
+      <span class="col-header">Propietario</span>
+      <span class="col-header">WhatsApp</span>
+      <span class="col-header"></span>
+    </div>
+    <div id="dept-list"></div>
+    <button class="add-btn" onclick="addDept()">+ Agregar departamento</button>
+    <br><br>
+    <button class="save-btn" id="btn-save-depts" onclick="saveDepts()">Guardar departamentos</button>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">Cambiar PIN de Administrador</div>
+    <div class="change-pin-row">
+      <div class="field-group">
+        <label class="field-label">PIN actual</label>
+        <input type="password" class="field-input" id="old-pin" maxlength="6" inputmode="numeric" placeholder="••••" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">PIN nuevo</label>
+        <input type="password" class="field-input" id="new-pin" maxlength="6" inputmode="numeric" placeholder="••••" />
+      </div>
+    </div>
+    <button class="save-btn" onclick="changePin()">Cambiar PIN</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDXJRaFIR8K7XvYuwqg-_t-PqF__vxw1Z0",
+    authDomain: "portero-electrico-f9e63.firebaseapp.com",
+    databaseURL: "https://portero-electrico-f9e63-default-rtdb.firebaseio.com",
+    projectId: "portero-electrico-f9e63",
+    storageBucket: "portero-electrico-f9e63.firebasestorage.app",
+    messagingSenderId: "900720232104",
+    appId: "1:900720232104:web:c9e6d10b13b4d2ef4fa49d"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const DEFAULT_DATA = {
+    buildingName: "EDIFICIO EL ACUERDO",
+    pin: "1234",
+    departments: [
+      { number: "1A", owner: "Propietario 1A", phone: "5491100000001" },
+      { number: "1B", owner: "Propietario 1B", phone: "5491100000002" },
+      { number: "2A", owner: "Propietario 2A", phone: "5491100000003" },
+      { number: "2B", owner: "Propietario 2B", phone: "5491100000004" },
+      { number: "3A", owner: "Propietario 3A", phone: "5491100000005" },
+      { number: "3B", owner: "Propietario 3B", phone: "5491100000006" },
+      { number: "4A", owner: "Propietario 4A", phone: "5491100000007" },
+      { number: "4B", owner: "Propietario 4B", phone: "5491100000008" },
+      { number: "5A", owner: "Propietario 5A", phone: "5491100000009" },
+      { number: "5B", owner: "Propietario 5B", phone: "5491100000010" },
+    ]
+  };
+
+  let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+  // ── Cargar datos desde Firebase ──
+  async function loadFromFirebase() {
+    try {
+      const snapshot = await get(ref(db, 'portero'));
+      if (snapshot.exists()) {
+        appData = snapshot.val();
+        // Convertir departments de objeto a array si es necesario
+        if (appData.departments && !Array.isArray(appData.departments)) {
+          appData.departments = Object.values(appData.departments);
+        }
+      } else {
+        // Primera vez: guardar datos por defecto
+        await set(ref(db, 'portero'), DEFAULT_DATA);
+      }
+    } catch(e) {
+      console.error('Error cargando Firebase:', e);
+    }
+    renderPublic();
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('view-public').style.display = 'flex';
+  }
+
+  // ── Guardar en Firebase ──
+  async function saveToFirebase(data) {
+    await set(ref(db, 'portero'), data);
+  }
+
+  // ── Escuchar cambios en tiempo real ──
+  onValue(ref(db, 'portero'), (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      if (data.departments && !Array.isArray(data.departments)) {
+        data.departments = Object.values(data.departments);
+      }
+      appData = data;
+      renderPublic();
+    }
+  });
+
+  // ── Render vista pública ──
+  window.renderPublic = function() {
+    document.getElementById('pub-building-name').textContent = appData.buildingName;
+    document.title = appData.buildingName;
+    const grid = document.getElementById('dept-grid');
+    grid.innerHTML = '';
+    (appData.departments || []).forEach(dept => {
+      const a = document.createElement('a');
+      a.className = 'dept-btn';
+      a.href = `https://wa.me/${dept.phone}?video=1`;
+      a.setAttribute('target', '_blank');
+      a.innerHTML = `
+        <span class="dept-number">${dept.number}</span>
+        <span class="dept-owner">${dept.owner || 'Sin nombre'}</span>
+        <span class="call-icon">📹</span>
+        <span class="call-label">Videollamar</span>
+      `;
+      grid.appendChild(a);
+    });
+  }
+
+  // ── Render panel admin ──
+  window.renderAdmin = function() {
+    document.getElementById('admin-building-name').value = appData.buildingName;
+    const list = document.getElementById('dept-list');
+    list.innerHTML = '';
+    (appData.departments || []).forEach((dept, i) => {
+      const row = document.createElement('div');
+      row.className = 'dept-row';
+      row.innerHTML = `
+        <input class="field-input" type="text" value="${dept.number}" placeholder="1A" data-field="number" data-idx="${i}" />
+        <input class="field-input" type="text" value="${dept.owner}" placeholder="Propietario" data-field="owner" data-idx="${i}" />
+        <input class="field-input" type="tel" value="${dept.phone}" placeholder="5491100000000" data-field="phone" data-idx="${i}" />
+        <button class="del-btn" onclick="deleteDept(${i})">✕</button>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // ── Acciones admin ──
+  window.saveBuildingName = async function() {
+    const btn = document.getElementById('btn-save-building');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    appData.buildingName = document.getElementById('admin-building-name').value.trim() || appData.buildingName;
+    await saveToFirebase(appData);
+    btn.disabled = false; btn.textContent = 'Guardar nombre';
+    showToast('✓ Nombre guardado en la nube');
+  }
+
+  window.saveDepts = async function() {
+    const btn = document.getElementById('btn-save-depts');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    const rows = document.querySelectorAll('#dept-list .dept-row');
+    appData.departments = Array.from(rows).map((row, i) => ({
+      number: row.querySelector('[data-field="number"]').value.trim(),
+      owner:  row.querySelector('[data-field="owner"]').value.trim(),
+      phone:  row.querySelector('[data-field="phone"]').value.trim(),
+    }));
+    await saveToFirebase(appData);
+    btn.disabled = false; btn.textContent = 'Guardar departamentos';
+    showToast('✓ Departamentos guardados en la nube');
+  }
+
+  window.addDept = function() {
+    appData.departments.push({ number: '', owner: '', phone: '' });
+    renderAdmin();
+  }
+
+  window.deleteDept = function(idx) {
+    appData.departments.splice(idx, 1);
+    renderAdmin();
+  }
+
+  window.changePin = async function() {
+    const oldPin = document.getElementById('old-pin').value;
+    const newPin = document.getElementById('new-pin').value;
+    if (oldPin !== appData.pin) { showToast('✕ PIN actual incorrecto', true); return; }
+    if (newPin.length < 4) { showToast('✕ El PIN nuevo debe tener al menos 4 dígitos', true); return; }
+    appData.pin = newPin;
+    await saveToFirebase(appData);
+    document.getElementById('old-pin').value = '';
+    document.getElementById('new-pin').value = '';
+    showToast('✓ PIN cambiado y guardado en la nube');
+  }
+
+  // ── Navegación ──
+  window.showPublic = function() {
+    document.getElementById('view-public').style.display = 'flex';
+    document.getElementById('view-admin').style.display = 'none';
+  }
+
+  window.showAdmin = function() {
+    renderAdmin();
+    document.getElementById('view-public').style.display = 'none';
+    document.getElementById('view-admin').style.display = 'block';
+  }
+
+  // ── Modal PIN ──
+  window.openPinModal = function() {
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-error').style.display = 'none';
+    document.getElementById('pin-overlay').classList.add('active');
+    setTimeout(() => document.getElementById('pin-input').focus(), 100);
+  }
+
+  window.closePinModal = function() {
+    document.getElementById('pin-overlay').classList.remove('active');
+  }
+
+  window.checkPin = function() {
+    const val = document.getElementById('pin-input').value;
+    if (val === appData.pin) {
+      closePinModal();
+      showAdmin();
+    } else {
+      document.getElementById('pin-error').style.display = 'block';
+      document.getElementById('pin-input').value = '';
+      document.getElementById('pin-input').focus();
+    }
+  }
+
+  document.getElementById('pin-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.checkPin();
+  });
+
+  document.getElementById('pin-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('pin-overlay')) window.closePinModal();
+  });
+
+  // ── Toast ──
+  window.showToast = function(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = isError ? 'var(--danger)' : 'var(--accent2)';
+    t.style.color = isError ? 'white' : '#0f1117';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── Init ──
+  loadFromFirebase();
+</script>
+</body>
+</html>
