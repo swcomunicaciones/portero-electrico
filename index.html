@@ -294,12 +294,13 @@
     // Nombre de sala único por depto
     const roomName = `ElAcuerdo${currentDept.number}`;
 
-    // Link para el propietario — entra directo sin preguntas
-    const propietarioUrl = `https://meet.jit.si/${roomName}#config.prejoinPageEnabled=false&config.startWithVideoMuted=false&config.startWithAudioMuted=false&userInfo.displayName=${encodeURIComponent('Propietario')}`;
+    // Link para el propietario — abre residente.html directamente
+    const baseUrl = window.location.href.replace('index.html', '').replace(/\/$/, '');
+    const propietarioUrl = `${baseUrl}/residente.html?depto=${encodeURIComponent(currentDept.number)}&room=${roomName}`;
 
-    // Mensaje WhatsApp
+    // Mensaje WhatsApp simple y claro
     const building = appData.buildingName || 'El edificio';
-    const msg = `🔔 *${building}* — Hay una visita en la puerta del Depto ${currentDept.number}.\n\nTocá para atender:\n${propietarioUrl}`;
+    const msg = `🔔 *${building}*\n\nHay una visita esperando en la puerta del *Depto ${currentDept.number}*.\n\n👇 Tocá para atender:\n${propietarioUrl}`;
 
     if (currentDept.phone) {
       window.open(`https://wa.me/${currentDept.phone}?text=${encodeURIComponent(msg)}`, '_blank');

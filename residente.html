@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portero — Residente</title>
+  <title>Hay visita!</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     :root {
@@ -12,98 +12,96 @@
       --text-muted: #7a7f9a; --border: #2e3250; --radius: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 36px 28px; width: 100%; max-width: 380px; text-align: center; }
-
-    .icon { font-size: 3rem; margin-bottom: 16px; display: block; filter: drop-shadow(0 0 12px rgba(79,142,247,0.4)); }
-    h1 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
-    .depto-badge { display: inline-block; background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); font-size: 0.8rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin: 10px 0 16px; letter-spacing: 0.06em; }
-    .description { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
-
-    .btn-activate {
-      width: 100%; background: var(--accent); color: white; border: none;
-      border-radius: 12px; padding: 14px; font-size: 0.95rem; font-weight: 700;
-      cursor: pointer; transition: background 0.18s; display: flex;
-      align-items: center; justify-content: center; gap: 8px;
+    body {
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
     }
-    .btn-activate:hover { background: #3a7ae0; }
-    .btn-activate:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .status-box { margin-top: 20px; padding: 14px 16px; border-radius: 12px; font-size: 0.82rem; line-height: 1.5; display: none; }
-    .status-success { background: rgba(56,217,169,0.1); border: 1px solid rgba(56,217,169,0.3); color: var(--accent2); }
-    .status-error { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); color: var(--danger); }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 40px 28px; width: 100%;
+      max-width: 380px; text-align: center;
+    }
 
-    .already-active { background: rgba(56,217,169,0.1); border: 1px solid rgba(56,217,169,0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px; display: none; }
-    .already-active .check { font-size: 1.8rem; margin-bottom: 8px; }
-    .already-active p { font-size: 0.82rem; color: var(--accent2); line-height: 1.5; }
+    .bell { font-size: 4rem; display: block; margin-bottom: 20px; animation: ring 0.6s infinite alternate; }
+    @keyframes ring { from{transform:rotate(-16deg)} to{transform:rotate(16deg)} }
 
-    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .building { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+    h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+    .depto { display: inline-block; background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); font-size: 0.85rem; font-weight: 700; padding: 5px 16px; border-radius: 20px; margin: 10px 0 24px; }
+    .subtitle { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
 
-    /* Videollamada entrante */
-    .incoming-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-    .incoming-overlay.active { display: flex; }
-    .incoming-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 28px; width: 92%; max-width: 380px; text-align: center; }
-    .incoming-icon { font-size: 3.5rem; animation: ring 0.6s infinite alternate; }
-    @keyframes ring { from { transform: rotate(-12deg); } to { transform: rotate(12deg); } }
-    .incoming-card h2 { font-size: 1.2rem; margin: 12px 0 6px; }
-    .incoming-card p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 24px; }
-    .btn-answer { background: var(--accent2); color: #0f1117; border: none; border-radius: 12px; padding: 14px 32px; font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 10px; }
-    .btn-reject { background: transparent; border: 1px solid var(--danger); color: var(--danger); border-radius: 12px; padding: 12px 32px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-    .jitsi-container { width: 100%; height: 100vh; display: none; position: fixed; inset: 0; z-index: 200; }
+    .btn-answer {
+      width: 100%; background: var(--accent2); color: #0f1117;
+      border: none; border-radius: 14px; padding: 16px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      transition: opacity 0.18s; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-answer:hover { opacity: 0.88; }
 
-    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    .btn-reject {
+      width: 100%; background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border); border-radius: 14px; padding: 13px;
+      font-size: 0.88rem; cursor: pointer; transition: border-color 0.18s;
+    }
+    .btn-reject:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* Pantalla de videollamada */
+    #call-screen {
+      display: none; position: fixed; inset: 0; background: var(--bg);
+      flex-direction: column; z-index: 100;
+    }
+    #call-screen.active { display: flex; }
+    #jitsi-container { flex: 1; width: 100%; }
+    .hangup-bar { padding: 12px 20px; background: var(--surface); border-top: 1px solid var(--border); }
+    .btn-hangup {
+      width: 100%; background: var(--danger); color: white;
+      border: none; border-radius: 12px; padding: 13px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    }
+
+    /* Loading */
+    #loading { display: none; flex-direction: column; align-items: center; gap: 14px; }
+    #loading.active { display: flex; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .building-name { font-size: 0.75rem; color: var(--text-muted); margin-top: 20px; }
+    .loading-text { font-size: 0.82rem; color: var(--text-muted); }
   </style>
 </head>
 <body>
 
-<!-- Pantalla principal -->
+<!-- Pantalla de aviso -->
 <div class="card" id="main-card">
-  <div class="spinner" id="loading-spinner"></div>
-  <div id="main-content" style="display:none">
-    <span class="icon">🏠</span>
-    <h1>Portal del Residente</h1>
-    <div class="depto-badge" id="depto-label">Depto —</div>
-    <p class="description">Activá las notificaciones para recibir un aviso en tu celular cuando haya una visita en la puerta.</p>
+  <span class="bell">🔔</span>
+  <div class="building" id="building-name">EDIFICIO EL ACUERDO</div>
+  <h1>¡Hay visita!</h1>
+  <div class="depto" id="depto-label">Depto —</div>
+  <p class="subtitle">Alguien está esperando en la puerta.<br>¿Querés atender la videollamada?</p>
 
-    <div class="already-active" id="already-active-box">
-      <div class="check">✅</div>
-      <p><strong>Notificaciones activas</strong><br>Vas a recibir un aviso cuando llegue alguien a tu departamento.</p>
-    </div>
-
-    <button class="btn-activate" id="btn-activate" onclick="activateNotifications()">
-      🔔 Activar notificaciones
-    </button>
-
-    <div class="status-box" id="status-box"></div>
-
-    <hr class="divider" />
-    <p class="building-name" id="building-name-label"></p>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Conectando videollamada...</div>
   </div>
-</div>
 
-<!-- Llamada entrante -->
-<div class="incoming-overlay" id="incoming-overlay">
-  <div class="incoming-card">
-    <div class="incoming-icon">🔔</div>
-    <h2>¡Hay visita!</h2>
-    <p id="incoming-msg">Alguien está en la puerta de tu departamento</p>
+  <div id="buttons">
     <button class="btn-answer" onclick="answerCall()">📹 Atender videollamada</button>
-    <button class="btn-reject" onclick="rejectCall()">✕ Ignorar</button>
+    <button class="btn-reject" onclick="rejectCall()">Ignorar</button>
   </div>
 </div>
 
-<!-- Contenedor Jitsi -->
-<div class="jitsi-container" id="jitsi-container"></div>
+<!-- Pantalla de videollamada fullscreen -->
+<div id="call-screen">
+  <div id="jitsi-container"></div>
+  <div class="hangup-bar">
+    <button class="btn-hangup" onclick="hangup()">✕ Colgar</button>
+  </div>
+</div>
 
 <script src="https://meet.jit.si/external_api.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, onChildAdded, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDXJRaFIR8K7XvYuwqg-_t-PqF__vxw1Z0",
@@ -115,176 +113,73 @@
     appId: "1:900720232104:web:c9e6d10b13b4d2ef4fa49d"
   };
 
-  const VAPID_KEY = "BEaTikxhorwYjfX-JoMOu2gsIiVJOErGDBAJ4NOdmYNkAU7vUVFh5U4QCrIrNmFJjdnm3NI1OtQD5OJ_4FiX230";
-
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // Obtener número de departamento de la URL
   const params = new URLSearchParams(window.location.search);
-  const depto = params.get('depto') || '';
+  const depto = params.get('depto') || '—';
+  const room = params.get('room') || `ElAcuerdo${depto}`;
 
-  let currentRoom = null;
+  document.getElementById('depto-label').textContent = `Depto ${depto}`;
+
+  // Cargar nombre del edificio
+  try {
+    const snap = await get(ref(db, 'portero/buildingName'));
+    if (snap.exists()) document.getElementById('building-name').textContent = snap.val();
+  } catch(e) {}
+
   let jitsiApi = null;
-  let appData = null;
-  let lastCallTimestamp = Date.now();
-
-  async function init() {
-    if (!depto) {
-      document.getElementById('loading-spinner').style.display = 'none';
-      document.getElementById('main-content').style.display = 'block';
-      document.getElementById('depto-label').textContent = 'Link inválido';
-      document.getElementById('btn-activate').style.display = 'none';
-      return;
-    }
-
-    document.getElementById('depto-label').textContent = `Depto ${depto}`;
-
-    // Cargar datos del edificio
-    try {
-      const snapshot = await get(ref(db, 'portero'));
-      if (snapshot.exists()) {
-        appData = snapshot.val();
-        document.getElementById('building-name-label').textContent = appData.buildingName || '';
-
-        // Verificar si ya tiene token
-        const tokenSnap = await get(ref(db, `portero/tokens/${depto}`));
-        if (tokenSnap.exists()) {
-          document.getElementById('already-active-box').style.display = 'block';
-          document.getElementById('btn-activate').textContent = '🔄 Reactivar notificaciones';
-        }
-      }
-    } catch(e) {}
-
-    document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
-
-    // Escuchar llamadas entrantes en tiempo real
-    listenForCalls();
-  }
-
-  // Escuchar nuevas llamadas en Firebase
-  function listenForCalls() {
-    const callsRef = query(ref(db, `llamadas/${depto}`), orderByChild('timestamp'), limitToLast(1));
-    onChildAdded(callsRef, (snapshot) => {
-      const call = snapshot.val();
-      // Solo mostrar llamadas nuevas (en los últimos 30 segundos)
-      if (call && call.timestamp > lastCallTimestamp && call.status === 'calling') {
-        lastCallTimestamp = call.timestamp;
-        currentRoom = call.room;
-        showIncomingCall();
-      }
-    });
-  }
-
-  function showIncomingCall() {
-    document.getElementById('incoming-msg').textContent = `Hay alguien en la puerta del Depto ${depto}`;
-    document.getElementById('incoming-overlay').classList.add('active');
-
-    // Vibrar el celular si es posible
-    if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]);
-  }
 
   window.answerCall = function() {
-    document.getElementById('incoming-overlay').classList.remove('active');
-    const container = document.getElementById('jitsi-container');
-    container.style.display = 'block';
-    container.innerHTML = '';
+    document.getElementById('buttons').style.display = 'none';
+    document.getElementById('loading').classList.add('active');
 
-    jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
-      roomName: currentRoom,
-      width: "100%",
-      height: "100%",
-      parentNode: container,
-      configOverwrite: {
-        startWithVideoMuted: false,
-        startWithAudioMuted: false,
-        prejoinPageEnabled: false,
-      },
-      interfaceConfigOverwrite: {
-        SHOW_JITSI_WATERMARK: false,
-        TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'],
-      },
-      userInfo: { displayName: `Depto ${depto}` }
-    });
+    setTimeout(() => {
+      document.getElementById('loading').classList.remove('active');
+      document.getElementById('main-card').style.display = 'none';
+      document.getElementById('call-screen').classList.add('active');
 
-    jitsiApi.addEventListener('readyToClose', () => {
-      endCall();
-    });
+      const container = document.getElementById('jitsi-container');
+      container.innerHTML = '';
+
+      jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
+        roomName: room,
+        width: "100%",
+        height: "100%",
+        parentNode: container,
+        configOverwrite: {
+          prejoinPageEnabled: false,
+          startWithVideoMuted: false,
+          startWithAudioMuted: false,
+          disableDeepLinking: true,
+        },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          TOOLBAR_BUTTONS: ['microphone', 'camera', 'hangup'],
+        },
+        userInfo: { displayName: `Depto ${depto}` }
+      });
+
+      jitsiApi.addEventListener('readyToClose', () => hangup());
+    }, 800);
   }
 
   window.rejectCall = function() {
-    document.getElementById('incoming-overlay').classList.remove('active');
-    currentRoom = null;
+    window.close();
+    // Si no cierra (algunos navegadores bloquean), mostrar mensaje
+    document.getElementById('main-card').innerHTML = `
+      <span style="font-size:2.5rem">👋</span>
+      <p style="margin-top:16px;color:var(--text-muted);font-size:0.88rem">Llamada ignorada.<br>Podés cerrar esta ventana.</p>
+    `;
   }
 
-  function endCall() {
+  window.hangup = function() {
     if (jitsiApi) { jitsiApi.dispose(); jitsiApi = null; }
-    document.getElementById('jitsi-container').style.display = 'none';
+    document.getElementById('call-screen').classList.remove('active');
+    document.getElementById('main-card').style.display = 'block';
+    document.getElementById('buttons').style.display = 'block';
     document.getElementById('jitsi-container').innerHTML = '';
-    currentRoom = null;
   }
-
-  // Activar notificaciones push
-  window.activateNotifications = async function() {
-    const btn = document.getElementById('btn-activate');
-    const statusBox = document.getElementById('status-box');
-    btn.disabled = true;
-    btn.innerHTML = '⏳ Activando...';
-
-    try {
-      // Pedir permiso
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        showStatus('Para recibir avisos, necesitás permitir las notificaciones cuando el navegador te lo pregunte.', false);
-        btn.disabled = false;
-        btn.innerHTML = '🔔 Activar notificaciones';
-        return;
-      }
-
-      // Registrar Service Worker
-      let swReg;
-      try {
-        swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      } catch(e) {
-        // Si no hay SW, igual guardamos que está activo
-        swReg = await navigator.serviceWorker.ready;
-      }
-
-      // Obtener token FCM
-      const messaging = getMessaging(app);
-      const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-
-      // Guardar token en Firebase
-      await set(ref(db, `portero/tokens/${depto}`), token);
-
-      document.getElementById('already-active-box').style.display = 'block';
-      showStatus('✅ ¡Listo! Vas a recibir un aviso cuando llegue alguien a tu puerta.', true);
-      btn.innerHTML = '✓ Notificaciones activas';
-
-      // Escuchar mensajes en primer plano
-      onMessage(messaging, (payload) => {
-        if (payload.data && payload.data.room) {
-          currentRoom = payload.data.room;
-          showIncomingCall();
-        }
-      });
-
-    } catch(e) {
-      showStatus('Hubo un error al activar. Intentá de nuevo o usá Chrome.', false);
-      btn.disabled = false;
-      btn.innerHTML = '🔔 Activar notificaciones';
-    }
-  }
-
-  function showStatus(msg, success) {
-    const box = document.getElementById('status-box');
-    box.textContent = msg;
-    box.className = 'status-box ' + (success ? 'status-success' : 'status-error');
-    box.style.display = 'block';
-  }
-
-  init();
 </script>
 </body>
 </html>
